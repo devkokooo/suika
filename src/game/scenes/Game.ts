@@ -1,4 +1,4 @@
-import { Scene } from 'phaser';
+import { Scene, Physics } from 'phaser';
 import { HEIGHT, WIDTH } from '../main';
 
 const PINK_100 = 0xfce7f3;
@@ -168,28 +168,18 @@ export class Game extends Scene {
     });
 
     // Handle ball collision and merging
-    this.matter.world.on("collisionstart", (
-      _: Phaser.Physics.Matter.Events.CollisionStartEvent,
-      bodyA: MatterJS.BodyType,
-      bodyB: MatterJS.BodyType
+    this.matter.world.on(Physics.Matter.Events.COLLISION_START, (
+      event: Phaser.Physics.Matter.Events.CollisionStartEvent,
     ) => {
-      this.handleMerging(bodyA, bodyB);
-    });
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
 
-    this.matter.world.on("collisionactive", (
-      _: Phaser.Physics.Matter.Events.CollisionActiveEvent,
-      bodyA: MatterJS.BodyType,
-      bodyB: MatterJS.BodyType
-    ) => {
-      this.handleMerging(bodyA, bodyB);
-    });
+        if(bodyA.id > bodyB.id) return; // one trigger per pair
+        if(bodyA.isStatic || bodyB.isStatic) return;
 
-    this.matter.world.on("collisionend", (
-      _: Phaser.Physics.Matter.Events.CollisionEndEvent,
-      bodyA: MatterJS.BodyType,
-      bodyB: MatterJS.BodyType
-    ) => {
-      this.handleMerging(bodyA, bodyB);
+        console.log(bodyA, bodyB);
+        this.handleMerging(bodyA, bodyB);
+      });
     });
   }
 
