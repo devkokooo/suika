@@ -177,7 +177,6 @@ export class Game extends Scene {
         if(bodyA.id > bodyB.id) return; // one trigger per pair
         if(bodyA.isStatic || bodyB.isStatic) return;
 
-        console.log(bodyA, bodyB);
         this.handleMerging(bodyA, bodyB);
       });
     });
