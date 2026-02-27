@@ -149,6 +149,8 @@ export class Game extends Scene {
       ) {
         this.activePointer = pointer;
 
+        if(this.currentBall.tier === TIER.NONE) return;
+
         const ball = this.add.circle(pointer.x, pointer.y, this.currentBall.radius, this.currentBall.color);
         ball.setStrokeStyle(1, PINK_100);
 
@@ -157,9 +159,15 @@ export class Game extends Scene {
           restitution: 0.1,
         }).setData({ mergeable: true, tier: this.currentBall.tier });
 
-        this.currentBall = this.nextBall;
-        this.generateNextBall();
+        this.currentBall = { radius: - 1, color: -1, tier: TIER.NONE };
         this.previewCurrentBall({ pointer });
+
+        // Delay spawning to prevent spamming
+        this.time.delayedCall(500, () => {
+          this.currentBall = this.nextBall;
+          this.generateNextBall();
+          this.previewCurrentBall({ pointer });
+        });
       }
     });
 
@@ -303,6 +311,8 @@ export class Game extends Scene {
   }) {
     const current = this.nextBallUI;
     current.clear();
+
+    if(this.currentBall.tier === TIER.NONE) return;
 
     current.fillStyle(this.currentBall.color);
     current.fillCircle(pointer.x, pointer.y, this.currentBall.radius);
