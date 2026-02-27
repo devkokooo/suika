@@ -33,6 +33,9 @@ export class Game extends Scene {
   nextBall = { radius: -1, color: -1, tier: TIER.NONE };
   storedBall = { radius: -1, color: -1, tier: TIER.NONE };
 
+  score = 0;
+  fibseq = [1,1,2,3,5,8,13,21,34,55,89];
+
   interface: Phaser.GameObjects.Graphics;
   ballContainer: Phaser.GameObjects.Graphics;
   previewBall: Phaser.GameObjects.Graphics;
@@ -40,6 +43,8 @@ export class Game extends Scene {
   storedBallUI: Phaser.GameObjects.Graphics;
 
   activePointer: Phaser.Input.Pointer;
+
+  scoreText: Phaser.GameObjects.Text;
 
   constructor() {
     super('Game');
@@ -77,6 +82,14 @@ export class Game extends Scene {
     });
     this.interface.lineStyle(4, PINK_100);
     this.interface.strokeRect(WIDTH - 200, 305, 150, 150);
+
+    // Display score
+    this.add.text(WIDTH - 975, 50, "SCORE", {
+      fontStyle: "bold", fontFamily: "monospace", fontSize: 20,
+    });
+    this.scoreText = this.add.text(WIDTH - 975, 80, `${this.score}`, {
+      fontStyle: "bold", fontFamily: "monospace", fontSize: 50,
+    });
 
     // Keyboard input (Z to store)
     const keyZ = this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
@@ -214,6 +227,16 @@ export class Game extends Scene {
     }).setData({ mergeable: true, tier: nextTier.tier });
 
     objB?.destroy();
+
+    this.updateScore(tierA);
+  }
+
+  private updateScore(tier: TIER) {
+    const index = this.tiers.indexOf(tier);
+    const fib = this.fibseq[index];
+
+    this.score += (index * 2 + fib);
+    this.scoreText.setText(this.score.toString());
   }
 
   private renderBallContainer({ width, height, x, y, thickness}: {
