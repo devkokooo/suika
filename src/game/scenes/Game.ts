@@ -7,6 +7,11 @@ enum TIER {
   NONE, ONE, TWO, THREE, FOUR, FIVE,
   SIX, SEVEN, EIGHT, NINE, TEN, ELEVEN,
 }
+type BallData = {
+  radius: number;
+  color: number;
+  tier: TIER;
+};
 
 export class Game extends Scene {
   // BALL RELATED
@@ -29,9 +34,9 @@ export class Game extends Scene {
     TIER.SIX, TIER.SEVEN, TIER.EIGHT, TIER.NINE, TIER.TEN, TIER.ELEVEN,
   ];
 
-  currentBall = { radius: -1, color: -1, tier: TIER.NONE };
-  nextBall = { radius: -1, color: -1, tier: TIER.NONE };
-  storedBall = { radius: -1, color: -1, tier: TIER.NONE };
+  currentBall: BallData = { radius: -1, color: -1, tier: TIER.NONE };
+  nextBall: BallData = { radius: -1, color: -1, tier: TIER.NONE };
+  storedBall: BallData = { radius: -1, color: -1, tier: TIER.NONE };
 
   score = 0;
   fibseq = [1,1,2,3,5,8,13,21,34,55,89];
@@ -196,20 +201,21 @@ export class Game extends Scene {
 
     const nextTier = this.getNextTierBall(tierA);
 
-    // Merge moving ball INTO the non-moving one
-    const { x, y } = bodyA.position;
-
-    const ball = this.add.circle(x, y, nextTier.radius, nextTier.color);
-    ball.setStrokeStyle(1, PINK_100);
-
     objA?.destroy();
-
-    this.matter.add.gameObject(ball, {
-      shape: { type: "circle", radius: nextTier.radius },
-      restitution: 0.2,
-    }).setData({ mergeable: true, tier: nextTier.tier });
-
     objB?.destroy();
+
+    if(nextTier !== null) {
+      // Merge moving ball INTO the non-moving one
+      const { x, y } = bodyA.position;
+
+      const ball = this.add.circle(x, y, nextTier.radius, nextTier.color);
+      ball.setStrokeStyle(1, PINK_100);
+
+      this.matter.add.gameObject(ball, {
+        shape: { type: "circle", radius: nextTier.radius },
+        restitution: 0.2,
+      }).setData({ mergeable: true, tier: nextTier.tier });
+    }
 
     this.updateScore(tierA);
   }
@@ -262,12 +268,12 @@ export class Game extends Scene {
     graphics.strokePath();
   }
 
-  private getNextTierBall(tier: TIER) {
+  private getNextTierBall(tier: TIER): BallData | null {
     const index = this.tiers.indexOf(tier);
     const maxIndex = this.tiers.length - 1;
     let next = index + 1;
 
-    if(next > maxIndex) next = 0;
+    if(next > maxIndex) return null;
 
     const nextRadius = this.radii[next];
     const nextColor = this.colors[next];
