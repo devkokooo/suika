@@ -3,20 +3,31 @@ import { HEIGHT, WIDTH } from '../main';
 
 const PINK_100 = 0xfce7f3;
 
-enum TIER { NONE, ONE, TWO, THREE, FOUR, FIVE, SIX }
+enum TIER {
+  NONE, ONE, TWO, THREE, FOUR, FIVE,
+  SIX, SEVEN, EIGHT, NINE, TEN, ELEVEN,
+}
 
 export class Game extends Scene {
   // BALL RELATED
-  // +4, +8, +12, +16, +20
-  radii = [12, 16, 24, 36, 54, 74];
+  radii = [
+    // +4, +8, +12, +14, +10
+    12, 16, 24, 36, 60, 70,
+    // +10, +10, +10, +10, +10, +10
+    80, 90, 100, 110, 120, 130 
+  ];
   colors = [
     // cherry, strawberry, grape, tangerine, orange
     // red-600, red-400, violet-600, amber-400, orange-500
-    0xfb2c36, 0xff8904, 0xfcc800, 0x7ccf00, 0x00d3f2, 0x7f22fe,
+    0xe7000b, 0xff6467, 0x7f22fe, 0xffba00, 0xff6900,
     // apple, korean pear, peach, pineapple, melon, watermelon
-    // red-600, yellow-300, pink-300, lime-300, green-500
+    // red-600, yellow-200, pink-300, yellow-300, lime-300, green-500
+    0xe7000b, 0xfff085, 0xfda5d5, 0xffdf20, 0xbbf451, 0x00c951,
   ];
-  tiers = [TIER.ONE, TIER.TWO, TIER.THREE, TIER.FOUR, TIER.FIVE, TIER.SIX];
+  tiers = [
+    TIER.ONE, TIER.TWO, TIER.THREE, TIER.FOUR, TIER.FIVE,
+    TIER.SIX, TIER.SEVEN, TIER.EIGHT, TIER.NINE, TIER.TEN, TIER.ELEVEN,
+  ];
 
   currentBall = { radius: -1, color: -1, tier: TIER.NONE };
   nextBall = { radius: -1, color: -1, tier: TIER.NONE };
