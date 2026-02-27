@@ -194,16 +194,10 @@ export class Game extends Scene {
 
     if(tierA !== tierB) return;
 
-    // Merge same tiers to next tier
-    // A is usually the static one
-    // B is usually the moving one
-
-    // Merge B into A
-    // Replace A, remove B
     const nextTier = this.getNextTierBall(tierA);
 
-    // Get B coordinates and create new ball with upgraded tier to take its place
-    const { x, y } = bodyB.position;
+    // Merge moving ball INTO the non-moving one
+    const { x, y } = bodyA.position;
 
     const ball = this.add.circle(x, y, nextTier.radius, nextTier.color);
     ball.setStrokeStyle(1, PINK_100);
